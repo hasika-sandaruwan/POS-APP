@@ -3,6 +3,7 @@ package lk.ise.pos.dao;
 import lk.ise.pos.dao.util.PasswordConfig;
 import lk.ise.pos.db.DBConnection;
 import lk.ise.pos.entity.Customer;
+import lk.ise.pos.entity.Item;
 import lk.ise.pos.entity.User;
 
 import java.sql.*;
@@ -74,4 +75,11 @@ public class DataAccessCode {
         return null;
     }
     //=========User Manage Code============
+    //=========Items Manage Code============
+   /* public boolean saveItem(Item i){}
+    public boolean updateItem(Item i){}
+    public Item findItem(String code){}
+    public boolean deleteItem(String code){}
+    public List<Item> allItems(){}*/
+    //=========Items Manage Code============
 }
