@@ -87,16 +87,16 @@ public class CustomerFormController {
             }
 
         } else {
-            for (Customer c : Database.customers) {
-                if (c.getId().equals(txtId.getText())) {
-                    c.setName(c1.getName());
-                    c.setAddress(c1.getAddress());
-                    c.setSalary(c1.getSalary());
-
+            try {
+                if (new DataAccessCode().updateCustomer(c1)) {
                     new Alert(Alert.AlertType.INFORMATION, "Customer Updated!").show();
                     loadAll("");
-                    btn.setText("Save Customer");
+                } else {
+                    new Alert(Alert.AlertType.WARNING, "Something went Wrong!").show();
                 }
+            }catch (ClassNotFoundException | SQLException e){
+                e.printStackTrace();
+                new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
             }
         }
 
@@ -113,28 +113,42 @@ public class CustomerFormController {
 
     private void loadAll(String searchText) {
         ObservableList<CustomerTM> tmList = FXCollections.observableArrayList();
-        for (Customer c : Database.customers) {
-            Button btn = new Button("Delete");
-            CustomerTM tm = new CustomerTM(
-                    c.getId(), c.getName(), c.getAddress(), c.getSalary(), btn
-            );
+        try {
+            for (Customer c : new DataAccessCode().allCustomers()) {
+                Button btn = new Button("Delete");
+                CustomerTM tm = new CustomerTM(
+                        c.getId(), c.getName(), c.getAddress(), c.getSalary(), btn
+                );
 
 
-            btn.setOnAction(e->{
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are yiu sure?",
-                        ButtonType.YES,ButtonType.NO);
-                Optional<ButtonType> type = alert.showAndWait();
-                if (type.get()==ButtonType.YES){
-                    Database.customers.remove(c);
-                    new Alert(Alert.AlertType.INFORMATION, "Customer Deleted!").show();
-                    loadAll("");
-                }
+                btn.setOnAction(e -> {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are yiu sure?",
+                            ButtonType.YES, ButtonType.NO);
+                    Optional<ButtonType> type = alert.showAndWait();
+                    if (type.get() == ButtonType.YES) {
+                       try{
+                           if (new DataAccessCode().deleteCustomer(c.getId())) {
+                               new Alert(Alert.AlertType.INFORMATION, "Customer Deleted!").show();
+                               loadAll("");
+                           } else {
+                               new Alert(Alert.AlertType.WARNING, "Something went Wrong!").show();
+                           }
 
-            });
+                       }catch (ClassNotFoundException | SQLException ex){
+                           ex.printStackTrace();
+                           new Alert(Alert.AlertType.ERROR, ex.getMessage()).show();
+                       }
+                    }
 
-            tmList.add(tm);
+                });
+
+                tmList.add(tm);
+            }
+            tbl.setItems(tmList);
+        }catch (ClassNotFoundException | SQLException e){
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
         }
-        tbl.setItems(tmList);
     }
 
     public void newCustomer(ActionEvent actionEvent) {
