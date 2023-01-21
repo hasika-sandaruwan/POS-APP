@@ -10,28 +10,15 @@ import java.util.List;
 public class DataAccessCode {
     //=========Customer Manage Code============
     public boolean saveCustomer(Customer c) throws ClassNotFoundException, SQLException {
-        String sql="INSERT INTO customer VALUES(?,?,?,?)";
-        PreparedStatement preparedStatement = DBConnection.getInstance().getConnection().prepareStatement(sql);
-        preparedStatement.setString(1,c.getId());
-        preparedStatement.setString(2,c.getName());
-        preparedStatement.setString(3,c.getAddress());
-        preparedStatement.setDouble(4,c.getSalary());
-        return preparedStatement.executeUpdate()>0;
+        return CrudUtil.execute("INSERT INTO customer VALUES(?,?,?,?)",
+                c.getId(),c.getName(),c.getAddress(),c.getSalary());
     }
     public boolean updateCustomer(Customer c) throws ClassNotFoundException, SQLException {
-        String sql="UPDATE customer SET name=?, address=?, salary=? WHERE id=?";
-        PreparedStatement preparedStatement = DBConnection.getInstance().getConnection().prepareStatement(sql);
-        preparedStatement.setString(1,c.getName());
-        preparedStatement.setString(2,c.getAddress());
-        preparedStatement.setDouble(3,c.getSalary());
-        preparedStatement.setString(4,c.getId());
-        return preparedStatement.executeUpdate()>0;
+        return CrudUtil.execute("UPDATE customer SET name=?, address=?, salary=? WHERE id=?",
+                c.getName(),c.getAddress(),c.getSalary(),c.getId());
     }
     public Customer findCustomer(String id) throws ClassNotFoundException, SQLException {
-        String sql="SELECT * FROM customer WHERE id=?";
-        PreparedStatement preparedStatement = DBConnection.getInstance().getConnection().prepareStatement(sql);
-        preparedStatement.setString(1,id);
-        ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSet resultSet = CrudUtil.execute("SELECT * FROM customer WHERE id=?",id);
         if (resultSet.next()){
             return new Customer(
                     resultSet.getString(1),
@@ -43,15 +30,10 @@ public class DataAccessCode {
         return null;
     }
     public boolean deleteCustomer(String id) throws SQLException, ClassNotFoundException {
-        String sql="DELETE FROM customer WHERE id=?";
-        PreparedStatement preparedStatement = DBConnection.getInstance().getConnection().prepareStatement(sql);
-        preparedStatement.setString(1,id);
-        return preparedStatement.executeUpdate()>0;
+        return CrudUtil.execute("DELETE FROM customer WHERE id=?",id);
     }
     public List<Customer> allCustomers() throws SQLException, ClassNotFoundException {
-        String sql="SELECT * FROM customer";
-        PreparedStatement preparedStatement = DBConnection.getInstance().getConnection().prepareStatement(sql);
-        ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSet resultSet = CrudUtil.execute("SELECT * FROM customer");
         List<Customer> customerList= new ArrayList<>();
         while (resultSet.next()){
             customerList.add(new Customer(
