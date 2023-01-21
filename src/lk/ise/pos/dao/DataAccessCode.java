@@ -66,5 +66,12 @@ public class DataAccessCode {
         }
     }
 
+    public User findUser(String username) throws SQLException, ClassNotFoundException {
+        ResultSet resultSet = CrudUtil.execute("SELECT * FROM user WHERE username=?", username);
+        if (resultSet.next()){
+            return new User(resultSet.getString(1),resultSet.getString(2));
+        }
+        return null;
+    }
     //=========User Manage Code============
 }

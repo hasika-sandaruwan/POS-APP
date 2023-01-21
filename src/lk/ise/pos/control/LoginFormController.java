@@ -8,6 +8,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import lk.ise.pos.dao.DataAccessCode;
 import lk.ise.pos.db.Database;
 import lk.ise.pos.entity.User;
 import org.mindrot.jbcrypt.BCrypt;
@@ -23,24 +24,26 @@ public class LoginFormController {
     }
 
     public void loginOnAction(ActionEvent actionEvent) throws IOException {
-        User selectedUser = Database.users.stream()
-                .filter(user -> user.getUsername()
-                        .equals(txtUsername.getText()))
-                .findFirst().orElse(null);
-        if (selectedUser!=null){
-            if (BCrypt.checkpw(pwd.getText(),selectedUser.getPassword())){
+        try {
+            User selectedUser = new DataAccessCode().findUser(txtUsername.getText());
+            if (selectedUser != null) {
+                if (BCrypt.checkpw(pwd.getText(), selectedUser.getPassword())) {
 
-                Stage stage = (Stage) loginFormContext.getScene().getWindow();
-                stage.setScene(
-                        new Scene(FXMLLoader.load(getClass().getResource("../view/DashboardForm.fxml")))
-                );
-                stage.centerOnScreen();
+                    Stage stage = (Stage) loginFormContext.getScene().getWindow();
+                    stage.setScene(
+                            new Scene(FXMLLoader.load(getClass().getResource("../view/DashboardForm.fxml")))
+                    );
+                    stage.centerOnScreen();
 
-            }else{
-                System.out.println("Wrong password!");
+                } else {
+                    System.out.println("Wrong password!");
+                }
+            } else {
+                new Alert(Alert.AlertType.WARNING, "User name not found!").show();
             }
-        }else{
-            new Alert(Alert.AlertType.WARNING, "User name not found!").show();
+        }catch (Exception e){
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
         }
     }
 }
