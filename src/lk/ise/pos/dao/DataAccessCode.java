@@ -17,9 +17,9 @@ public class DataAccessCode {
         String sql="INSERT INTO customer VALUES(?,?,?,?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1,c.getId());
-        preparedStatement.setString(1,c.getName());
-        preparedStatement.setString(1,c.getAddress());
-        preparedStatement.setDouble(1,c.getSalary());
+        preparedStatement.setString(2,c.getName());
+        preparedStatement.setString(3,c.getAddress());
+        preparedStatement.setDouble(4,c.getSalary());
         return preparedStatement.executeUpdate()>0;
     }
     public boolean updateCustomer(Customer c){}
