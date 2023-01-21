@@ -9,12 +9,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import lk.ise.pos.dao.DataAccessCode;
 import lk.ise.pos.db.Database;
 import lk.ise.pos.entity.Customer;
 import lk.ise.pos.view.tm.CustomerTM;
 
 import javax.xml.crypto.Data;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class CustomerFormController {
@@ -64,7 +66,7 @@ public class CustomerFormController {
                 .load(getClass().getResource("../view/DashboardForm.fxml"))));
     }
 
-    public void saveCustomer(ActionEvent actionEvent) {
+    public void saveCustomer(ActionEvent actionEvent){
         Customer c1 = new Customer(
                 txtId.getText(), txtName.getText(), txtAddress.getText()
                 , Double.parseDouble(txtSalary.getText())
@@ -72,9 +74,18 @@ public class CustomerFormController {
 
 
         if (btn.getText().equals("Save Customer")) {
-            Database.customers.add(c1);
-            new Alert(Alert.AlertType.INFORMATION, "Customer Saved!").show();
-            loadAll("");
+            try {
+                if (new DataAccessCode().saveCustomer(c1)) {
+                    new Alert(Alert.AlertType.INFORMATION, "Customer Saved!").show();
+                    loadAll("");
+                } else {
+                    new Alert(Alert.AlertType.WARNING, "Something went Wrong!").show();
+                }
+            }catch (ClassNotFoundException | SQLException e){
+                e.printStackTrace();
+                new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+            }
+
         } else {
             for (Customer c : Database.customers) {
                 if (c.getId().equals(txtId.getText())) {

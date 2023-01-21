@@ -11,7 +11,7 @@ import java.util.List;
 public class DataAccessCode {
     //=========Customer Manage Code============
     public boolean saveCustomer(Customer c) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.cj.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver"); // com.mysql.jdbc.Driver
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pos",
                 "root","1234");
         String sql="INSERT INTO customer VALUES(?,?,?,?)";
@@ -22,9 +22,9 @@ public class DataAccessCode {
         preparedStatement.setDouble(4,c.getSalary());
         return preparedStatement.executeUpdate()>0;
     }
-    public boolean updateCustomer(Customer c){}
+    /*public boolean updateCustomer(Customer c){}
     public Customer findCustomer(String id){}
     public boolean deleteCustomer(String id){}
-    public List<Customer> allCustomers(){}
+    public List<Customer> allCustomers(){}*/
     //=========Customer Manage Code============
 }
