@@ -1,15 +1,15 @@
-package lk.ise.pos.entity;
+package lk.ise.pos.dto;
 
-public class OrderDetails {
+public class OrderDetailsDto {
     private String code;
     private String orderId;
     private double unitPrice;
     private int qty;
 
-    public OrderDetails() {
+    public OrderDetailsDto() {
     }
 
-    public OrderDetails(String code, String orderId, double unitPrice, int qty) {
+    public OrderDetailsDto(String code, String orderId, double unitPrice, int qty) {
         this.code = code;
         this.orderId = orderId;
         this.unitPrice = unitPrice;
