@@ -1,33 +1,60 @@
 package lk.ise.pos.bo.custom.impl;
 
 import lk.ise.pos.bo.custom.ItemBo;
+import lk.ise.pos.dao.custom.ItemDao;
+import lk.ise.pos.dao.custom.impl.ItemDaoImpl;
 import lk.ise.pos.dto.ItemDto;
+import lk.ise.pos.entity.Item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemBoImpl implements ItemBo {
+    ItemDao itemDao = new ItemDaoImpl();
     @Override
-    public boolean saveItem(ItemDto dto) {
-        return false;
+    public boolean saveItem(ItemDto dto) throws Exception {
+        return itemDao.save(
+                new Item(
+                        dto.getCode(), dto.getDescription(), dto.getQtyOnHand(), dto.getUnitPrice()
+                )
+        );
     }
 
     @Override
-    public boolean updateItem(ItemDto dto) {
-        return false;
+    public boolean updateItem(ItemDto dto) throws Exception {
+        return itemDao.update(
+                new Item(
+                        dto.getCode(), dto.getDescription(), dto.getQtyOnHand(), dto.getUnitPrice()
+                )
+        );
     }
 
     @Override
-    public ItemDto findItem(String id) {
+    public ItemDto findItem(String id) throws Exception {
+        Item item = itemDao.find(id);
+        if (item!=null){
+            return new ItemDto(
+                    item.getCode(),item.getDescription(), item.getQtyOnHand(), item.getUnitPrice()
+            );
+        }
         return null;
     }
 
     @Override
-    public boolean deleteItem(String id) {
-        return false;
+    public boolean deleteItem(String id) throws Exception {
+        return itemDao.delete(id);
     }
 
     @Override
-    public List<ItemDto> findAllItems(String id) {
-        return null;
+    public List<ItemDto> findAllItems(String id) throws Exception {
+        List<ItemDto> dtos = new ArrayList<>();
+        for (Item item: itemDao.findAll()){
+            dtos.add(
+                    new ItemDto(
+                            item.getCode(),item.getDescription(), item.getQtyOnHand(), item.getUnitPrice()
+                    )
+            );
+        }
+        return dtos;
     }
 }
