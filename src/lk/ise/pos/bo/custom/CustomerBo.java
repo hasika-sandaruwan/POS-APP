@@ -1,6 +1,7 @@
 package lk.ise.pos.bo.custom;
 
 import lk.ise.pos.bo.SuperBo;
+import lk.ise.pos.dto.CustomerDto;
 
 import java.util.List;
 
