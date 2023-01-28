@@ -2,6 +2,7 @@ package lk.ise.pos.bo;
 
 import lk.ise.pos.bo.custom.impl.CustomerBoImpl;
 import lk.ise.pos.bo.custom.impl.ItemBoImpl;
+import lk.ise.pos.bo.custom.impl.OrderBoImpl;
 import lk.ise.pos.bo.custom.impl.UserBoImpl;
 import lk.ise.pos.dao.custom.impl.CustomerDaoImpl;
 import lk.ise.pos.dao.custom.impl.ItemDaoImpl;
@@ -23,6 +24,8 @@ public class BoFactory {
                 return (T) new UserBoImpl();
             case ITEM:
                 return (T) new ItemBoImpl();
+            case ORDER:
+                return (T) new OrderBoImpl();
             default:
                 return null;
         }

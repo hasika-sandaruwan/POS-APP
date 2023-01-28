@@ -60,7 +60,7 @@ public class OrderDetailsFormController {
             new Alert(Alert.AlertType.WARNING, "Not Found").show();
             return;
         }
-        ArrayList<OrderDetails> items = selectedOrder.get().getProducts();
+        ArrayList<OrderDetails> items = null;
         ObservableList<OrderDetailsTM> tmList = FXCollections.observableArrayList();
         for(OrderDetails d:items){
             tmList.add(

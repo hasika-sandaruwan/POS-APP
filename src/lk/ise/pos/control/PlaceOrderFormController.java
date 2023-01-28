@@ -15,6 +15,10 @@ import lk.ise.pos.bo.custom.CustomerBo;
 import lk.ise.pos.bo.custom.ItemBo;
 import lk.ise.pos.bo.custom.OrderBo;
 import lk.ise.pos.db.Database;
+import lk.ise.pos.dto.CustomerDto;
+import lk.ise.pos.dto.ItemDto;
+import lk.ise.pos.dto.OrderDetailsDto;
+import lk.ise.pos.dto.OrderDto;
 import lk.ise.pos.entity.Customer;
 import lk.ise.pos.entity.Item;
 import lk.ise.pos.entity.Order;
@@ -92,14 +96,19 @@ public class PlaceOrderFormController {
 
 
     private void setItemData(String code) {
-        Item item = Database.items.stream().filter(e -> e.getCode().equals(code)).findFirst().orElse(null);
-        if (item != null) {
-            txtDescription.setText(item.getDescription());
-            txtUnitPrice.setText(String.valueOf(item.getUnitPrice()));
-            txtQtyOnHand.setText(String.valueOf(item.getQtyOnHand()));
-        } else {
-            new Alert(Alert.AlertType.WARNING, "Not Found").show();
+        try{
+            ItemDto item =itemBo.findItem(code);
+            if (item != null) {
+                txtDescription.setText(item.getDescription());
+                txtUnitPrice.setText(String.valueOf(item.getUnitPrice()));
+                txtQtyOnHand.setText(String.valueOf(item.getQtyOnHand()));
+            } else {
+                new Alert(Alert.AlertType.WARNING, "Not Found").show();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     private void loadItemCodes() {
@@ -114,17 +123,20 @@ public class PlaceOrderFormController {
     }
 
     private void setCustomerData(String id) {
-        Customer customer =
-                Database.customers.stream().filter(e -> e.getId().equals(id)).findFirst().orElse(null);
-        if (customer != null) { // null!=customer==> fast
-            txtCustomerName.setText(customer.getName());
-            txtAddress.setText(customer.getAddress());
-            // String x="nimal"==> literal, String a= new String("bandara"); =>
-            // String(literal,dynamic),StringBuilder,StringBuffer// (Threads, String API)
-            txtSalary.setText(String.valueOf(customer.getSalary()));
-            txtSalary.setText(customer.getSalary() + "");//
-        } else {
-            new Alert(Alert.AlertType.WARNING, "Not Found").show();
+        try {
+            CustomerDto customer = customerBo.findCustomer(id);
+
+            if (customer != null) {
+                txtCustomerName.setText(customer.getName());
+                txtAddress.setText(customer.getAddress());
+                txtSalary.setText(String.valueOf(customer.getSalary()));
+                txtSalary.setText(customer.getSalary() + "");
+            } else {
+                new Alert(Alert.AlertType.WARNING, "Not Found").show();
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -155,7 +167,6 @@ public class PlaceOrderFormController {
                     tblCart.refresh();
                 }
             }
-            // update
         } else {
             Button btn = new Button("Delete");
             CartTm tm = new CartTm(cmbItemCode.getValue(),
@@ -204,21 +215,30 @@ public class PlaceOrderFormController {
     }
 
     public void saveOrder(ActionEvent actionEvent) {
-        ArrayList<OrderDetails> products = new ArrayList<>();
+        ArrayList<OrderDetailsDto> products = new ArrayList<>();
         for (CartTm tm : tmList) {
-            products.add(new OrderDetails(tm.getCode(), tm.getUnitPrice(), tm.getQty()));
+            products.add(new OrderDetailsDto(tm.getCode(),lblOrderId.getText(), tm.getUnitPrice(), tm.getQty()));
             manageQty(tm.getCode(), tm.getQty());
         }
-        Order order = new Order(lblOrderId.getText(),
+        OrderDto orderDto = new OrderDto(lblOrderId.getText(),
                 cmbCustomerId.getValue(), new Date(),
-                Double.parseDouble(lblTotal.getText()), products);
-        Database.orders.add(order);
-        new Alert(Alert.AlertType.INFORMATION, "Order Completed").show();
+                Double.parseDouble(lblTotal.getText()));
+        try{
+            boolean isSaved = orderBo.saveOrder(orderDto,products);
+            if (isSaved){
+                new Alert(Alert.AlertType.INFORMATION, "Order Completed").show();
 
-        tmList.clear();
-        tblCart.refresh();
-        lblTotal.setText(String.valueOf(0));
-        loadOrderId();
+                tmList.clear();
+                tblCart.refresh();
+                lblTotal.setText(String.valueOf(0));
+                loadOrderId();
+            }else{
+                new Alert(Alert.AlertType.ERROR, "Try Again").show();
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void manageQty(String code, int qty) {
