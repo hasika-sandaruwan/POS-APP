@@ -2,6 +2,7 @@ package lk.ise.pos.dao;
 
 import lk.ise.pos.dao.custom.impl.CustomerDaoImpl;
 import lk.ise.pos.dao.custom.impl.ItemDaoImpl;
+import lk.ise.pos.dao.custom.impl.OrderDaoImpl;
 import lk.ise.pos.dao.custom.impl.UserDaoImpl;
 import lk.ise.pos.enums.DaoType;
 
@@ -19,6 +20,8 @@ public class DaoFactory {
                 return (T) new UserDaoImpl();
             case ITEM:
                 return (T) new ItemDaoImpl();
+            case ORDER:
+                return (T) new OrderDaoImpl();
             default:
                 return null;
         }

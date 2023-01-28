@@ -1,19 +1,20 @@
-package lk.ise.pos.entity;
+package lk.ise.pos.dto;
+
+import lk.ise.pos.entity.OrderDetails;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Order {
+public class OrderDto {
     private String orderId;
     private String customer;
     private Date date;
     private double total;
-    /*private ArrayList<OrderDetails> products;*/
 
-    public Order() {
+    public OrderDto() {
     }
 
-    public Order(String orderId, String customer, Date date, double total) {
+    public OrderDto(String orderId, String customer, Date date, double total) {
         this.orderId = orderId;
         this.customer = customer;
         this.date = date;
