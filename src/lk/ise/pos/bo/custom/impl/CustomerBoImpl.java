@@ -1,17 +1,19 @@
 package lk.ise.pos.bo.custom.impl;
 
 import lk.ise.pos.bo.custom.CustomerBo;
+import lk.ise.pos.dao.DaoFactory;
 import lk.ise.pos.dao.custom.CustomerDao;
 import lk.ise.pos.dao.custom.impl.CustomerDaoImpl;
 import lk.ise.pos.dto.CustomerDto;
 import lk.ise.pos.entity.Customer;
+import lk.ise.pos.enums.DaoType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerBoImpl implements CustomerBo {
 
-    private CustomerDao customerDao = new CustomerDaoImpl();
+    private CustomerDao customerDao = DaoFactory.getInstance().getDao(DaoType.CUSTOMER);
 
     @Override
     public boolean saveCustomer(CustomerDto dto) throws Exception {
