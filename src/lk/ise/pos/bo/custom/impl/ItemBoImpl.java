@@ -6,6 +6,7 @@ import lk.ise.pos.dao.custom.impl.ItemDaoImpl;
 import lk.ise.pos.dto.ItemDto;
 import lk.ise.pos.entity.Item;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,5 +57,10 @@ public class ItemBoImpl implements ItemBo {
             );
         }
         return dtos;
+    }
+
+    @Override
+    public List<String> loadItemCodes() throws SQLException, ClassNotFoundException {
+        return itemDao.loadItemCodes();
     }
 }

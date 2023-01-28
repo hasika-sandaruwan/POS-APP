@@ -3,6 +3,7 @@ package lk.ise.pos.bo.custom;
 import lk.ise.pos.bo.SuperBo;
 import lk.ise.pos.dto.ItemDto;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface ItemBo extends SuperBo {
@@ -11,4 +12,7 @@ public interface ItemBo extends SuperBo {
     public ItemDto findItem(String id) throws Exception;
     public boolean deleteItem(String id) throws Exception;
     public List<ItemDto> findAllItems() throws Exception;
+
+    //============
+    public List<String> loadItemCodes() throws SQLException, ClassNotFoundException;
 }

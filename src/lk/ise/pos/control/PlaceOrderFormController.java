@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import lk.ise.pos.bo.BoFactory;
 import lk.ise.pos.bo.custom.CustomerBo;
+import lk.ise.pos.bo.custom.ItemBo;
+import lk.ise.pos.bo.custom.OrderBo;
 import lk.ise.pos.db.Database;
 import lk.ise.pos.entity.Customer;
 import lk.ise.pos.entity.Item;
@@ -47,7 +49,9 @@ public class PlaceOrderFormController {
     public AnchorPane context;
     public Label lblOrderId;
 
-    private CustomerBo customerBo= BoFactory.getInstance().getBo(BoType.CUSTOMER);
+    private CustomerBo customerBo = BoFactory.getInstance().getBo(BoType.CUSTOMER);
+    private ItemBo itemBo = BoFactory.getInstance().getBo(BoType.ITEM);
+    private OrderBo orderBo = BoFactory.getInstance().getBo(BoType.ORDER);
 
     public void initialize() {
         //======
@@ -79,18 +83,13 @@ public class PlaceOrderFormController {
     }
 
     private void loadOrderId() {
-        if (Database.orders.size()>0){
-            Order order = Database.orders.get(Database.orders.size() - 1);// [12,23,23] 3-1=2
-            String selectedOrderId= order.getOrderId();
-            String splitId =selectedOrderId.split("[A-Z]")[1];// D1 => [D,1];
-            int i = Integer.parseInt(splitId);
-            i++;
-            lblOrderId.setText("D"+i);
-        }else{
-            lblOrderId.setText("D1");
+        try {
+            lblOrderId.setText(orderBo.generateOrderId());
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
-
     }
+
 
     private void setItemData(String code) {
         Item item = Database.items.stream().filter(e -> e.getCode().equals(code)).findFirst().orElse(null);
@@ -104,7 +103,14 @@ public class PlaceOrderFormController {
     }
 
     private void loadItemCodes() {
-        for (Item data : Database.items) cmbItemCode.getItems().add(data.getCode());
+        try {
+            ObservableList<String> obList = FXCollections.observableArrayList(
+                    itemBo.loadItemCodes()
+            );
+            cmbItemCode.setItems(obList);
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void setCustomerData(String id) {
@@ -207,7 +213,7 @@ public class PlaceOrderFormController {
                 cmbCustomerId.getValue(), new Date(),
                 Double.parseDouble(lblTotal.getText()), products);
         Database.orders.add(order);
-        new Alert(Alert.AlertType.INFORMATION,"Order Completed").show();
+        new Alert(Alert.AlertType.INFORMATION, "Order Completed").show();
 
         tmList.clear();
         tblCart.refresh();
@@ -217,8 +223,8 @@ public class PlaceOrderFormController {
 
     private void manageQty(String code, int qty) {
         for (Item i : Database.items) {
-            if (i.getCode().equals(code)){
-                i.setQtyOnHand(i.getQtyOnHand()-qty);
+            if (i.getCode().equals(code)) {
+                i.setQtyOnHand(i.getQtyOnHand() - qty);
                 return;
             }
         }
