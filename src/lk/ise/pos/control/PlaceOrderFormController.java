@@ -10,14 +10,18 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import lk.ise.pos.bo.BoFactory;
+import lk.ise.pos.bo.custom.CustomerBo;
 import lk.ise.pos.db.Database;
 import lk.ise.pos.entity.Customer;
 import lk.ise.pos.entity.Item;
 import lk.ise.pos.entity.Order;
 import lk.ise.pos.entity.OrderDetails;
+import lk.ise.pos.enums.BoType;
 import lk.ise.pos.view.tm.CartTm;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
@@ -42,6 +46,8 @@ public class PlaceOrderFormController {
     public Label lblTotal;
     public AnchorPane context;
     public Label lblOrderId;
+
+    private CustomerBo customerBo= BoFactory.getInstance().getBo(BoType.CUSTOMER);
 
     public void initialize() {
         //======
@@ -117,8 +123,13 @@ public class PlaceOrderFormController {
     }
 
     private void loadCustomerIds() {
-        for (Customer data : Database.customers) {
-            cmbCustomerId.getItems().add(data.getId());
+        try {
+            ObservableList<String> obList = FXCollections.observableArrayList(
+                    customerBo.loadCustomerIds()
+            );
+            cmbCustomerId.setItems(obList);
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 

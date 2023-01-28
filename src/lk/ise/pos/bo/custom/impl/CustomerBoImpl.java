@@ -8,6 +8,7 @@ import lk.ise.pos.dto.CustomerDto;
 import lk.ise.pos.entity.Customer;
 import lk.ise.pos.enums.DaoType;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,5 +58,10 @@ public class CustomerBoImpl implements CustomerBo {
             );
         }
         return dtos;
+    }
+
+    @Override
+    public List<String> loadCustomerIds() throws SQLException, ClassNotFoundException {
+        return customerDao.loadCustomerIds();
     }
 }
