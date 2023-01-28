@@ -9,12 +9,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import lk.ise.pos.dao.DataAccessCode;
-import lk.ise.pos.db.Database;
 import lk.ise.pos.entity.Customer;
 import lk.ise.pos.view.tm.CustomerTM;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;

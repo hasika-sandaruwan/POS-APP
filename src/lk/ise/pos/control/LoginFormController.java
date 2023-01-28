@@ -8,8 +8,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import lk.ise.pos.dao.DataAccessCode;
-import lk.ise.pos.db.Database;
 import lk.ise.pos.entity.User;
 import org.mindrot.jbcrypt.BCrypt;
 
