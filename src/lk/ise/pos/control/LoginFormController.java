@@ -8,7 +8,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import lk.ise.pos.bo.BoFactory;
+import lk.ise.pos.bo.custom.UserBo;
+import lk.ise.pos.dto.UserDto;
 import lk.ise.pos.entity.User;
+import lk.ise.pos.enums.BoType;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
@@ -18,12 +22,14 @@ public class LoginFormController {
     public TextField txtUsername;
     public PasswordField pwd;
 
+    private UserBo bo =BoFactory.getInstance().getBo(BoType.CUSTOMER);
+
     public void initialize(){
     }
 
     public void loginOnAction(ActionEvent actionEvent) throws IOException {
         try {
-            User selectedUser = new DataAccessCode().findUser(txtUsername.getText());
+            UserDto selectedUser = bo.findUser(txtUsername.getText());
             if (selectedUser != null) {
                 if (BCrypt.checkpw(pwd.getText(), selectedUser.getPassword())) {
 
