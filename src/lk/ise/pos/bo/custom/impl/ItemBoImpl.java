@@ -46,7 +46,7 @@ public class ItemBoImpl implements ItemBo {
     }
 
     @Override
-    public List<ItemDto> findAllItems(String id) throws Exception {
+    public List<ItemDto> findAllItems() throws Exception {
         List<ItemDto> dtos = new ArrayList<>();
         for (Item item: itemDao.findAll()){
             dtos.add(

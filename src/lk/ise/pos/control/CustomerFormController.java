@@ -9,7 +9,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import lk.ise.pos.bo.BoFactory;
+import lk.ise.pos.bo.custom.CustomerBo;
+import lk.ise.pos.dto.CustomerDto;
 import lk.ise.pos.entity.Customer;
+import lk.ise.pos.enums.BoType;
 import lk.ise.pos.view.tm.CustomerTM;
 
 import java.io.IOException;
@@ -29,6 +33,8 @@ public class CustomerFormController {
     public TableColumn colSalary;
     public TableColumn colOption;
     public Button btn;
+
+    private CustomerBo customerBo= BoFactory.getInstance().getBo(BoType.CUSTOMER);
 
     public void initialize() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -64,7 +70,7 @@ public class CustomerFormController {
     }
 
     public void saveCustomer(ActionEvent actionEvent){
-        Customer c1 = new Customer(
+        CustomerDto c1 = new CustomerDto(
                 txtId.getText(), txtName.getText(), txtAddress.getText()
                 , Double.parseDouble(txtSalary.getText())
         );
@@ -72,20 +78,20 @@ public class CustomerFormController {
 
         if (btn.getText().equals("Save Customer")) {
             try {
-                if (new DataAccessCode().saveCustomer(c1)) {
+                if (customerBo.saveCustomer(c1)) {
                     new Alert(Alert.AlertType.INFORMATION, "Customer Saved!").show();
                     loadAll("");
                 } else {
                     new Alert(Alert.AlertType.WARNING, "Something went Wrong!").show();
                 }
-            }catch (ClassNotFoundException | SQLException e){
+            }catch (Exception e){
                 e.printStackTrace();
                 new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
             }
 
         } else {
             try {
-                if (new DataAccessCode().updateCustomer(c1)) {
+                if (customerBo.updateCustomer(c1)) {
                     new Alert(Alert.AlertType.INFORMATION, "Customer Updated!").show();
                     loadAll("");
                 } else {
@@ -94,6 +100,8 @@ public class CustomerFormController {
             }catch (ClassNotFoundException | SQLException e){
                 e.printStackTrace();
                 new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -111,7 +119,7 @@ public class CustomerFormController {
     private void loadAll(String searchText) {
         ObservableList<CustomerTM> tmList = FXCollections.observableArrayList();
         try {
-            for (Customer c : new DataAccessCode().allCustomers()) {
+            for (CustomerDto c : customerBo.findAllCustomers()) {
                 Button btn = new Button("Delete");
                 CustomerTM tm = new CustomerTM(
                         c.getId(), c.getName(), c.getAddress(), c.getSalary(), btn
@@ -124,7 +132,7 @@ public class CustomerFormController {
                     Optional<ButtonType> type = alert.showAndWait();
                     if (type.get() == ButtonType.YES) {
                        try{
-                           if (new DataAccessCode().deleteCustomer(c.getId())) {
+                           if (customerBo.deleteCustomer(c.getId())) {
                                new Alert(Alert.AlertType.INFORMATION, "Customer Deleted!").show();
                                loadAll("");
                            } else {
@@ -134,6 +142,8 @@ public class CustomerFormController {
                        }catch (ClassNotFoundException | SQLException ex){
                            ex.printStackTrace();
                            new Alert(Alert.AlertType.ERROR, ex.getMessage()).show();
+                       } catch (Exception ex) {
+                           throw new RuntimeException(ex);
                        }
                     }
 
@@ -145,6 +155,8 @@ public class CustomerFormController {
         }catch (ClassNotFoundException | SQLException e){
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

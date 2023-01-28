@@ -22,7 +22,7 @@ public class LoginFormController {
     public TextField txtUsername;
     public PasswordField pwd;
 
-    private UserBo bo =BoFactory.getInstance().getBo(BoType.CUSTOMER);
+    private UserBo bo =BoFactory.getInstance().getBo(BoType.USER);
 
     public void initialize(){
     }

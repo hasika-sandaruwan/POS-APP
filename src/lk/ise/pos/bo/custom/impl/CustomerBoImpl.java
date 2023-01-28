@@ -46,7 +46,7 @@ public class CustomerBoImpl implements CustomerBo {
     }
 
     @Override
-    public List<CustomerDto> findAllCustomers(String id) throws Exception {
+    public List<CustomerDto> findAllCustomers() throws Exception {
         List<Customer> all = customerDao.findAll();
         List<CustomerDto> dtos = new ArrayList<>();
         for (Customer customer : all) {
